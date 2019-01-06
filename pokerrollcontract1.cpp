@@ -10,7 +10,7 @@
 #include <set>
 #include <sstream>
 #include <unordered_map>
-#include "eosio.token/eosio.token.hpp"
+//#include "eosio.token/eosio.token.hpp"
 
 using namespace eosio;
 using std::string;
@@ -30,21 +30,21 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
   public:
     using contract::contract;
 
-    pokerrollcontract(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds) {}
+    pokerrollcontract(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds),nonces(_self, _self), pokerdicepools(_self, _self){}
 
     void deposit(name from,name to, asset t, string memo)
     {
 
         // No bet from eosvegascoin
-        if (from == name("eosvegascoin").value || from == name("eosvegascorp").value || from =  name("eosvegasopmk").value)
+        if (from == name("eosvegascoin") || from == name("eosvegascorp") || from =  name("eosvegasopmk"))
         {
             return;
         }
 
         string bettoken = "EOS";
-        eosio_assert(code == name("eosio.token").value, "EOS should be sent by eosio.token");
+        eosio_assert(_code == name("eosio.token"), "EOS should be sent by eosio.token");
         eosio_assert(t.symbol == EOS_SYMBOL, "Incorrect token type.");
-        sanity_check(name("eosio.token").value, name("transfer").value);
+        sanity_check(name("eosio.token"), name("transfer"));
  
 
         eosio_assert(to == _self, "Transfer not made to this contract");
@@ -107,22 +107,22 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             string bet_cards = "";
             string bet_value = "";
 
-            uint32_t nonceidx = usercomment.find("bet_cards[");
-            if (nonceidx > 0 && nonceidx != 4294967295)
+            uint32_t betcardidx = usercomment.find("bet_cards[");
+            if (betcardidx > 0 && betcardidx != 4294967295)
             {
-                uint32_t noncepos = usercomment.find("]", nonceidx);
-                if (noncepos > 0 && noncepos != 4294967295)
+                uint32_t betcardpos = usercomment.find("]", betcardidx);
+                if (betcardpos > 0 && betcardpos != 4294967295)
                 {
-                    string bet_cards = usercomment.substr(nonceidx + 10, noncepos - nonceidx - 10);
+                    string bet_cards = usercomment.substr(betcardidx + 10, betcardpos - betcardidx - 10);
                 }
             }
-            uint32_t nonceidx = usercomment.find("bet_value[");
-            if (nonceidx > 0 && nonceidx != 4294967295)
+            uint32_t valueidx = usercomment.find("bet_value[");
+            if (valueidx > 0 && valueidx != 4294967295)
             {
-                uint32_t noncepos = usercomment.find("]", nonceidx);
-                if (noncepos > 0 && noncepos != 4294967295)
+                uint32_t valuepos = usercomment.find("]", valueidx);
+                if (valuepos > 0 && valuepos != 4294967295)
                 {
-                    string bet_value = usercomment.substr(nonceidx + 10, noncepos - nonceidx - 10);
+                    string bet_value = usercomment.substr(valueidx + 10, valuepos - valueidx - 10);
                 }
             }
 
@@ -146,13 +146,13 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             //     	 	string bet_value;
 
             pokerdicepools.emplace(_self, [&](auto &p) {
-                p.owner = name{user};
-                p.betcurrency = bettoken；
-                                    p.nonce = nonce;
-                p.totalbet = t.quantity.amount;
+                p.owner = from;
+                p.betcurrency = bettoken;
+                p.nonce = nonce;
+                p.totalbet = t.amount;
                 p.seed = userseed;
                 p.bet_cards = bet_cards;
-                p.bet_value = bet_value
+                p.bet_value = bet_value;
             });
         }
     }
@@ -162,7 +162,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
     [[eosio::action]] 
     void pdreceipt(string game_id, const name player, string game, string seed, string bet_result,
                                      string bet_cards, string bet_value, uint64_t betnum, uint64_t winnum, string token, string pub_key) {
-        require_auth(name("eosvegasjack").value);
+        require_auth(name("eosvegasjack"));
         require_recipient(player);
 
         auto itr_pdpools = pokerdicepools.find(player);
@@ -188,8 +188,8 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             if (bal.amount > 0)
             {
                 // withdraw
-                action(permission_level{_self, name("active").value}, name("eosio.token").value,
-                       name("transfer").value, std::make_tuple(_self, player, bal, std::string("Winner winner chicken dinner! 大吉大利，今晚吃鸡！- PokerDice.rovegas.com")))
+                action(permission_level{_self, name("active")}, name("eosio.token"),
+                       name("transfer"), std::make_tuple(_self, player, bal, std::string("Winner winner chicken dinner! 大吉大利，今晚吃鸡！- PokerDice.rovegas.com")))
                     .send();
             }
         }
@@ -197,7 +197,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         pokerdicepools.erase(itr_pdpools);
     }
 
-    void sanity_check(uint64_t code, action_name act)
+    void sanity_check(uint64_t code, name act)
     {
         char buffer[32];
 
@@ -216,10 +216,10 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             eosio_assert(v.size() == 1, "Invalid request!!");
 
             permission_level pl = v[0];
-            eosio_assert(pl.permission == name("active").value || pl.permission == name("owner").value, "Invalid request!!");
+            eosio_assert(pl.permission == name("active") || pl.permission == name("owner"), "Invalid request!!");
         }
     }
-    uint32_t pokergame1::increment_nonce(const name user)
+    uint32_t increment_nonce(const name user)
     {
         // Get current nonce and increment it
         uint32_t nonce = 0;
@@ -245,7 +245,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
     }
 
   private:
-    struct st_pdpool
+    struct [[eosio::table]] st_pdpool
     {
         name owner;
         string betcurrency;
@@ -258,7 +258,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         uint64_t primary_key() const { return owner; }
     };
 
-    struct st_nonces {
+    struct [[eosio::table]] st_nonces {
         name owner;
         uint32_t number;
 
@@ -268,7 +268,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
     typedef eosio::multi_index<"pdpools"_n, st_pdpool> _pdpools;
     _pdpools pokerdicepools;
 
-    typedef multi_index<N(nonces), st_nonces> _tb_nonces;
+    typedef multi_index<"nonces"_n, st_nonces> _tb_nonces;
     _tb_nonces nonces;
 };
     //////////////////////////////////////////////////////section ends/////////////////////////////
@@ -282,10 +282,10 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         void apply(uint64_t receiver, uint64_t code, uint64_t action)                                                                    \
         {                                                                                                                                \
             auto self = receiver;                                                                                                        \
-            if (action == name("onerror").value                                                                                                    \
+            if (action == name("onerror").value                                                                                                   \
             {                                                                                                                            \
                 /* onerror is only valid if it is for the "eosio" code account and authorized by "eosio"'s "active permission */         \
-                eosio_assert(code == "eosio"_n.value, "onerror action's are only valid from the \"eosio\" system account");                     \
+                eosio_assert(code == name("eosio").value, "onerror action's are only valid from the \"eosio\" system account");                     \
             }                                                                                                                            \
             if (code == self || code == name("eosio.token").value ) \
             {                                                                                                                            \
