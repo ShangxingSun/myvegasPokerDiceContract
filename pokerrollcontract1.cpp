@@ -307,7 +307,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
                 }                                                                                                                       
                 switch (action)                                                                                                        
                 {                                                                                                                      
-                    EOSIO_DISPATCH_HELPER(TYPE, MEMBERS)                                                                                      
+					EOSIO_DISPATCH_HELPER(pokerrollcontract, (pdreceipt))
                 }                                                                                                                       
             }                                                                                                                          
         }                                                                                                                              
