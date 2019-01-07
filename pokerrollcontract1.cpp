@@ -8,7 +8,6 @@
 #include <eosiolib/transaction.hpp>
 #include <eosiolib/privileged.h>
 #include <set>
-#include <sstream>
 #include <unordered_map>
 //#include "eosio.token/eosio.token.hpp"
 
@@ -16,7 +15,6 @@ using namespace eosio;
 using std::string;
 using std::sort;
 using std::string;
-using std::stringstream;
 using std::hash;
 using std::unordered_map;
 using std::make_pair;
