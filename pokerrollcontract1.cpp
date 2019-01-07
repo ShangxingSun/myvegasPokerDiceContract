@@ -55,7 +55,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
 
         uint32_t gameid = 0; 
 
-        uint32_t typeidx = usercomment.find("seed[");
+        uint32_t typeidx = usercomment.find("type[");
         if (typeidx > 0 && typeidx != 4294967295)
         {
             uint32_t pos = usercomment.find("]");
@@ -141,7 +141,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             // 		    uint32_t betcurrency;
             //			uint32_t nonce;
             //       	uint64_t totalbet;
-            //       	uint64_t userseed;
+            //       	string userseed;
             //       	string bet_cards;
             //     	 	string bet_value;
 
@@ -253,7 +253,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         string betcurrency;
         uint32_t nonce;
         uint64_t totalbet;
-        uint64_t userseed;
+        string userseed;
         string bet_cards;
         string bet_value;
 
@@ -293,8 +293,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
                 if (action == name("transfer").value && code == self)                                                                    
                 {                                                                                                                        
                     return;                                                                                                             
-                }                                                                                                                       
-                TYPE thiscontract(self);                                                                                                 
+                }                                                                                                                                                                                                                     
                 if (action == name("transfer").value  && code == name("eosio.token").value)                                             
                 {                                                                                                                                              
                     eosio::execute_action(
@@ -308,7 +307,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
                 }                                                                                                                       
                 switch (action)                                                                                                        
                 {                                                                                                                      
-                    EOSIO_DISPATCH(TYPE, MEMBERS)                                                                                      
+                    EOSIO_DISPATCH_HELPER(TYPE, MEMBERS)                                                                                      
                 }                                                                                                                       
             }                                                                                                                          
         }                                                                                                                              
