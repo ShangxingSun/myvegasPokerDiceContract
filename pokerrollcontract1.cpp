@@ -32,7 +32,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
 
     pokerrollcontract(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds),nonces(_self, _self.value), pokerdicepools(_self, _self.value){}
 
-    void deposit(name from,name to, asset t, string memo)
+    void transfer(name from,name to, asset t, string memo)
     {
 
         // No bet from eosvegascoin
@@ -139,7 +139,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
 
             //  	    name owner;
             // 		    uint32_t betcurrency;
-            //			uint32_t nounce;
+            //			uint32_t nonce;
             //       	uint64_t totalbet;
             //       	uint64_t userseed;
             //       	string bet_cards;
@@ -177,15 +177,15 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         uint32_t seednonce = stoi(ucm);
         eosio_assert(seednonce == itr_pdpools->nonce, "PokerDice: nonce does not match.");
 
-        eosio_assert(token == itr_pdpools->bettoken, "PokerDice: bet token does not match.");
+        eosio_assert(token == itr_pdpools->betcurrency, "PokerDice: bet token does not match.");
 
         if (token == "EOS")
         {
-
+			/*
 			//paccounts  is exp related, ignore for now
             auto itr_paccount = paccounts.find(player);
             eosio_assert(itr_paccount != paccounts.end(), "PokerDice: user not found");
-
+			*/
             asset bal = asset((winnum), EOS_SYMBOL);
             if (bal.amount > 0)
             {
@@ -251,7 +251,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
     {
         name owner;
         string betcurrency;
-        uint32_t nounce;
+        uint32_t nonce;
         uint64_t totalbet;
         uint64_t userseed;
         string bet_cards;
@@ -284,24 +284,24 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         void apply(uint64_t receiver, uint64_t code, uint64_t action)                                                                    \
         {                                                                                                                                \
             auto self = receiver;                                                                                                        \
-            if (action == name("onerror").value                                                                                                   \
+            if (action == name("onerror").value                                                                                          \
             {                                                                                                                            \
                 /* onerror is only valid if it is for the "eosio" code account and authorized by "eosio"'s "active permission */         \
-                eosio_assert(code == name("eosio").value, "onerror action's are only valid from the \"eosio\" system account");                     \
+                eosio_assert(code == name("eosio").value, "onerror action's are only valid from the \"eosio\" system account");          \
             }                                                                                                                            \
             if (code == self || code == name("eosio.token").value ) \
             {                                                                                                                            \
-                if (action == name("transfer").value && code == self)                                                                               \
+                if (action == name("transfer").value && code == self)                                                                    \
                 {                                                                                                                        \
                     return;                                                                                                              \
                 }                                                                                                                        \
                 TYPE thiscontract(self);                                                                                                 \
-                if (action == name("transfer").value  && code == name("eosio.token").value)                                                                     \
+                if (action == name("transfer").value  && code == name("eosio.token").value)                                              \
                 {                                                                                                                        \                                                  \
                     eosio::execute_action(
-						eosio::name(receiver), eosio::name(code), &deposit
+						eosio::name(receiver), eosio::name(code), &transfer
 					);             
-					return;																													\
+					return;																												\
                 }                                                                                                                        \                                                                                                                   \
                 if (code != self)                                                                                                        \
                 {                                                                                                                        \
