@@ -150,7 +150,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
                 p.betcurrency = bettoken;
                 p.nonce = nonce;
                 p.totalbet = t.amount;
-                p.seed = userseed;
+                p.userseed = userseed;
                 p.bet_cards = bet_cards;
                 p.bet_value = bet_value;
             });
@@ -283,7 +283,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         void apply(uint64_t receiver, uint64_t code, uint64_t action)                                                                    
         {                                                                                                                                
             auto self = receiver;                                                                                                        
-            if (action == name("onerror").value                                                                                          
+            if (action == name("onerror").value)                                                                                          
             {                                                                                                                           
                 /* onerror is only valid if it is for the "eosio" code account and authorized by "eosio"'s "active permission */         
                 eosio_assert(code == name("eosio").value, "onerror action's are only valid from the \"eosio\" system account");          
