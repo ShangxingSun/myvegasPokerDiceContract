@@ -278,42 +278,40 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     //dispactch_custom
-
-#define EOSIO_DISPATCH_CUSTOM(TYPE, MEMBERS)                                                                                             \
-    extern "C"                                                                                                                           \
-    {                                                                                                                                    \
-        void apply(uint64_t receiver, uint64_t code, uint64_t action)                                                                    \
-        {                                                                                                                                \
-            auto self = receiver;                                                                                                        \
-            if (action == name("onerror").value                                                                                          \
-            {                                                                                                                            \
-                /* onerror is only valid if it is for the "eosio" code account and authorized by "eosio"'s "active permission */         \
-                eosio_assert(code == name("eosio").value, "onerror action's are only valid from the \"eosio\" system account");          \
-            }                                                                                                                            \
-            if (code == self || code == name("eosio.token").value ) \
-            {                                                                                                                            \
-                if (action == name("transfer").value && code == self)                                                                    \
-                {                                                                                                                        \
-                    return;                                                                                                              \
-                }                                                                                                                        \
-                TYPE thiscontract(self);                                                                                                 \
-                if (action == name("transfer").value  && code == name("eosio.token").value)                                              \
-                {                                                                                                                        \                                                  \
+                                                                                            
+    extern "C"                                                                                                                           
+    {                                                                                                                                    
+        void apply(uint64_t receiver, uint64_t code, uint64_t action)                                                                    
+        {                                                                                                                                
+            auto self = receiver;                                                                                                        
+            if (action == name("onerror").value                                                                                          
+            {                                                                                                                           
+                /* onerror is only valid if it is for the "eosio" code account and authorized by "eosio"'s "active permission */         
+                eosio_assert(code == name("eosio").value, "onerror action's are only valid from the \"eosio\" system account");          
+            }                                                                                                                            
+            if (code == self || code == name("eosio.token").value ) 
+            {                                                                                                                           
+                if (action == name("transfer").value && code == self)                                                                    
+                {                                                                                                                        
+                    return;                                                                                                             
+                }                                                                                                                       
+                TYPE thiscontract(self);                                                                                                 
+                if (action == name("transfer").value  && code == name("eosio.token").value)                                             
+                {                                                                                                                                              
                     eosio::execute_action(
-						eosio::name(receiver), eosio::name(code), &transfer
+						eosio::name(receiver), eosio::name(code), &pokerrollcontract::transfer
 					);             
-					return;																												\
-                }                                                                                                                        \                                                                                                                   \
-                if (code != self)                                                                                                        \
-                {                                                                                                                        \
-                    return;                                                                                                              \
-                }                                                                                                                        \
-                switch (action)                                                                                                          \
-                {                                                                                                                        \
-                    EOSIO_DISPATCH(TYPE, MEMBERS)                                                                                        \
-                }                                                                                                                        \
-            }                                                                                                                            \
-        }                                                                                                                                \
+					return;																												
+                }                                                                                                                                                        
+                if (code != self)                                                                                                        
+                {                                                                                                                       
+                    return;                                                                                                              
+                }                                                                                                                       
+                switch (action)                                                                                                        
+                {                                                                                                                      
+                    EOSIO_DISPATCH(TYPE, MEMBERS)                                                                                      
+                }                                                                                                                       
+            }                                                                                                                          
+        }                                                                                                                              
     }
 
-EOSIO_DISPATCH_CUSTOM(pokerrollcontract, (pdreceipt))
