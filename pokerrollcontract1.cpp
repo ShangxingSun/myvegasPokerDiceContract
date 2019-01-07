@@ -133,9 +133,9 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             eosio_assert(t.amount <= 200000, "PokerDice:Exceeds bet cap!");
 
 
-            auto itr_pdpools = pokerdicepools.find(from);
+            auto itr_pdpools = pokerdicepools.find(from.value);
 
-            eosio_assert(itr_pdpools == pookerdicepools.end(), "pokerdice: your last round is not finished. Please contact admin!");
+            eosio_assert(itr_pdpools == pokerdicepools.end(), "pokerdice: your last round is not finished. Please contact admin!");
 
             //  	    name owner;
             // 		    uint32_t betcurrency;
@@ -165,7 +165,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         require_auth(name("eosvegasjack"));
         require_recipient(player);
 
-        auto itr_pdpools = pokerdicepools.find(player);
+        auto itr_pdpools = pokerdicepools.find(player.value);
 
         eosio_assert(itr_pdpools != pokerdicepools.end(), "PokerDice: user pool not found");
         eosio_assert(itr_pdpools->totalbet > 0, "PokerDice:lackjack:bet must be larger than zero");
@@ -181,10 +181,12 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
 
         if (token == "EOS")
         {
+
+			//paccounts  is exp related, ignore for now
             auto itr_paccount = paccounts.find(player);
             eosio_assert(itr_paccount != paccounts.end(), "PokerDice: user not found");
 
-            asset bal = asset((winnum), symbol_type(S(4, EOS)));
+            asset bal = asset((winnum), EOS_SYMBOL);
             if (bal.amount > 0)
             {
                 // withdraw
@@ -210,7 +212,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             eosio_assert(cnt == 0, "Invalid request!");
 
             action a = get_action(1, cnt);
-            eosio_assert(a.account == code, "Invalid request!");
+            eosio_assert(a.account.value == code, "Invalid request!");
             eosio_assert(a.name == act, "Invalid request!");
             auto v = a.authorization;
             eosio_assert(v.size() == 1, "Invalid request!!");
@@ -223,7 +225,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
     {
         // Get current nonce and increment it
         uint32_t nonce = 0;
-        auto itr_nonce = nonces.find(user);
+        auto itr_nonce = nonces.find(user.value);
         if (itr_nonce != nonces.end())
         {
             nonce = itr_nonce->number;
@@ -255,14 +257,14 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         string bet_cards;
         string bet_value;
 
-        uint64_t primary_key() const { return owner; }
+        uint64_t primary_key() const { return owner.value; }
     };
 
     struct [[eosio::table]] st_nonces {
         name owner;
         uint32_t number;
 
-        uint64_t primary_key() const { return owner; }
+        uint64_t primary_key() const { return owner.value; }
     };
 
     typedef eosio::multi_index<"pdpools"_n, st_pdpool> _pdpools;
