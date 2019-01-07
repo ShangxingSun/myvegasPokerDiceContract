@@ -7,7 +7,6 @@
 #include <eosiolib/time.hpp>
 #include <eosiolib/transaction.hpp>
 #include <eosiolib/privileged.h>
-#include <eosiolib/currency.hpp>
 #include <set>
 #include <sstream>
 #include <unordered_map>
