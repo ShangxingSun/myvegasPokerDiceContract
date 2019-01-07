@@ -30,13 +30,13 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
   public:
     using contract::contract;
 
-    pokerrollcontract(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds),nonces(_self, _self), pokerdicepools(_self, _self){}
+    pokerrollcontract(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds),nonces(_self, _self.value), pokerdicepools(_self, _self.value){}
 
     void deposit(name from,name to, asset t, string memo)
     {
 
         // No bet from eosvegascoin
-        if (from == name("eosvegascoin") || from == name("eosvegascorp") || from =  name("eosvegasopmk"))
+        if (from == name("eosvegascoin") || from == name("eosvegascorp") || from ==  name("eosvegasopmk"))
         {
             return;
         }
@@ -44,7 +44,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         string bettoken = "EOS";
         eosio_assert(_code == name("eosio.token"), "EOS should be sent by eosio.token");
         eosio_assert(t.symbol == EOS_SYMBOL, "Incorrect token type.");
-        sanity_check(name("eosio.token"), name("transfer"));
+        sanity_check(name("eosio.token").value, name("transfer"));
  
 
         eosio_assert(to == _self, "Transfer not made to this contract");
