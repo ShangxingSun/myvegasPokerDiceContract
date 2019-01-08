@@ -26,6 +26,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
 {
 
   public:
+
     using contract::contract;
 
     pokerrollcontract(name receiver, name code, datastream<const char *> ds) : contract(receiver, code, ds),nonces(_self, _self.value), pokerdicepools(_self, _self.value){}
@@ -72,8 +73,14 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
             if (pos > 0 && pos != 4294967295)
             {
                 userseed = usercomment.substr(seedidx + 5, pos - seedidx - 5);
-            }
-        }
+			}
+			else {
+				userseed = "-1"
+			}
+		}
+		else {
+			userseed = "-2";
+		}
 
         /////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,7 +251,7 @@ class[[eosio::contract]] pokerrollcontract : public eosio::contract
         return nonce;
     }
 
-  private:
+
     struct [[eosio::table]] st_pdpool
     {
         name owner;
