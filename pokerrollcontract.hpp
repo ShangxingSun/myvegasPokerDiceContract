@@ -43,7 +43,7 @@ CONTRACT pokerrollcontract : public eosio::contract
 		uint32_t number;
 
 		uint64_t primary_key() const { return owner.value; }
-		EOSLIB_SERIALIZE(st_pdpool, (owner)(number))
+		EOSLIB_SERIALIZE(st_nonces, (owner)(number))
 	};
 
 	typedef eosio::multi_index<"pdpools"_n, st_pdpool> _pdpools;
