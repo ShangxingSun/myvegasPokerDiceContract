@@ -46,6 +46,12 @@ void pokerrollcontract::transfer(name from, name to, asset t, string memo)
 		{
 			userseed = usercomment.substr(seedidx + 5, pos - seedidx - 5);
 		}
+		else{
+			userseed = "-1";
+		}
+
+	}else{
+		userseed = "-2";
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////

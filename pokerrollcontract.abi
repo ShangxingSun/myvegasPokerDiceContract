@@ -1,0 +1,67 @@
+{
+    "____comment": "This file was generated with eosio-abigen. DO NOT EDIT Tue Jan  8 16:35:04 2019",
+    "version": "eosio::abi/1.0",
+    "structs": [
+        {
+            "name": "pdreceipt",
+            "base": "",
+            "fields": [
+                {
+                    "name": "game_id",
+                    "type": "string"
+                },
+                {
+                    "name": "player",
+                    "type": "name"
+                },
+                {
+                    "name": "game",
+                    "type": "string"
+                },
+                {
+                    "name": "seed",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_result",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_cards",
+                    "type": "string"
+                },
+                {
+                    "name": "bet_value",
+                    "type": "string"
+                },
+                {
+                    "name": "betnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "winnum",
+                    "type": "uint64"
+                },
+                {
+                    "name": "token",
+                    "type": "string"
+                },
+                {
+                    "name": "pub_key",
+                    "type": "string"
+                }
+            ]
+        }
+    ],
+    "types": [],
+    "actions": [
+        {
+            "name": "pdreceipt",
+            "type": "pdreceipt",
+            "ricardian_contract": ""
+        }
+    ],
+    "tables": [],
+    "ricardian_clauses": [],
+    "abi_extensions": []
+}
