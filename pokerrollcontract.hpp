@@ -52,7 +52,7 @@ CONTRACT pokerrollcontract : public eosio::contract
 	typedef multi_index<"nonces"_n, st_nonces> _tb_nonces;
 	_tb_nonces nonces;
 
-	ACTION void pdreceipt(string game_id, const name player, string game, string seed, string bet_result,
+	ACTION pdreceipt(string game_id, const name player, string game, string seed, string bet_result,
 		string bet_cards, string bet_value, uint64_t betnum, uint64_t winnum, string token, string pub_key);
 
 	void transfer(
