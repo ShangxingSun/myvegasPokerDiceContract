@@ -1,7 +1,6 @@
 #include <eosiolib/asset.hpp>
 #include <eosiolib/contract.hpp>
 #include <eosiolib/crypto.h>
-#include <eosiolib/currency.hpp>
 #include <eosiolib/eosio.hpp>
 #include <eosiolib/print.hpp>
 #include <eosiolib/singleton.hpp>
@@ -11,7 +10,6 @@
 #include <set>
 #include <sstream>
 #include <unordered_map>
-#include "eosio.token/eosio.token.hpp"
 
 using namespace eosio;
 
